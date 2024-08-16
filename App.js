@@ -137,6 +137,7 @@ export default function App() {
       ...prev,
       [name]: {
         ...coords,
+        name,
         radius: 500,
       },
     }));
@@ -202,6 +203,36 @@ export default function App() {
       promptForCurrentLocation(loc.coords);
     } else {
       Alert.alert('Limit Reached', 'You can only set up to 5 geofences.');
+    }
+  };
+
+  const calculateNearestGeofenceDistance = () => {
+    if (!location) return;
+    if (Object.keys(geofences).length === 0) {
+      Alert.alert('Please select a location first');
+      return;
+    }
+
+    let minDistance = Number.MAX_VALUE;
+    let nearestGeofence = null;
+
+    Object.values(geofences).forEach((geo) => {
+      const distance = getDistance(
+        { latitude: geo.latitude, longitude: geo.longitude },
+        { latitude: location.latitude, longitude: location.longitude }
+      );
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        nearestGeofence = geo;
+      }
+    });
+
+    if (nearestGeofence) {
+      Alert.alert(
+        'Nearest Geofence',
+        `The nearest geofence is ${nearestGeofence.name}, and it is ${Math.round(minDistance)} meters away.`
+      );
     }
   };
 
@@ -286,6 +317,12 @@ export default function App() {
           onPress={() => setScreen('options')}
         />
       </View>
+      <View style={styles.whereAmIButtonContainer}>
+        <Button
+          title="Where Am I?"
+          onPress={calculateNearestGeofenceDistance}
+        />
+      </View>
 
       {/* Modal for entering location name */}
       <Modal
@@ -355,6 +392,11 @@ const styles = StyleSheet.create({
     bottom: 20,
     left: 20,
   },
+  whereAmIButtonContainer: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+  },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -381,5 +423,3 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 });
-//securestore store based on user id 
-//where am i, it will tell how far the nearest geofence location are 
