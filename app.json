@@ -19,10 +19,10 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anx2t.MyNewProject",
+      "package": "Enter your expo account project URL here",
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyClHOsm4wKMwzEl804iDrCkfL21r3X9sCU"
+          "apiKey": "Your Google API key"
         }
       }
     },
