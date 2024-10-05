@@ -21,7 +21,6 @@ This project is a **Geofencing App** built using **React Native** and **Expo**. 
     - [Notifications](#notifications)
     - [Map and User Interface](#map-and-user-interface)
 4. [Geofence Algorithm](#geofence-algorithm)
-5. [Further Improvements](#further-improvements)
 
 ---
 
@@ -64,7 +63,7 @@ Use the Expo Go app to scan the QR code provided by the Expo CLI or connect your
 └── README.md                # Project documentation
 ```
 ## Key Features
-**Geofencing with Background Tasks**
+## Geofencing with Background Tasks
 The app uses Expo’s TaskManager and Location API to continuously track the user’s location in the background. The key task is defined in the LOCATION_TASK_NAME, which triggers every time the location is updated and checks if the user is inside or outside any geofenced area.
 ```bash 
 TaskManager.defineTask(LOCATION_TASK_NAME, ({ data, error }) => {
@@ -108,3 +107,24 @@ The MapView component from react-native-maps is used to display a map where user
 </MapView>
 ```
 The app limits users to five geofences for simplicity and clarity.
+
+## Geofence Algorithm
+
+The core functionality is based on calculating the distance between the user’s location and the geofence’s center. The app uses the Haversine formula to calculate the great-circle distance between two points (i.e., the shortest distance over the Earth's surface).
+
+```bash 
+const getDistance = (point1, point2) => {
+  const R = 6371e3; // Earth's radius in meters
+  const φ1 = (point1.latitude * Math.PI) / 180;
+  const φ2 = (point2.latitude * Math.PI) / 180;
+  const Δφ = ((point2.latitude - point1.latitude) * Math.PI) / 180;
+  const Δλ = ((point2.longitude - point1.longitude) * Math.PI) / 180;
+
+  const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+    Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return R * c;
+};
+```
+This function calculates the distance between two locations and checks whether the user is inside or outside the geofence.
